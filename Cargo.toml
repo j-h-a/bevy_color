@@ -1,0 +1,22 @@
+[package]
+name = "bevy_color"
+version = "0.12.1"
+edition = "2021"
+description = "Types for representing and manipulating color values"
+homepage = "https://bevyengine.org"
+repository = "https://github.com/bevyengine/bevy"
+license = "MIT OR Apache-2.0"
+keywords = ["bevy", "color"]
+
+# [lints]
+# workspace = true
+
+[dependencies]
+bevy = "0.12.1"
+bevy_reflect = "0.12.1"
+# bevy_render = "0.12.1"
+serde = "1.0.193"
+
+# Enable max optimizations for dependencies, but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
