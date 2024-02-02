@@ -1,3 +1,4 @@
+use crate::color_difference::EuclideanDistance;
 use crate::oklaba::Oklaba;
 use crate::to_css_string::ToCssString;
 use crate::{Hsla, LinearRgba, Mix};
@@ -114,6 +115,7 @@ impl SRgba {
     /// Convert the [`SRgba`] color to a tuple of components (r, g, b, a). This is useful
     /// when you need to transmute the data type of a color to a different type without converting
     /// the values.
+    ///
     /// For example, you can convert an [`SRgba`] to [`LinearRgba`] by doing:
     ///
     /// ```
@@ -146,7 +148,6 @@ impl SRgba {
     /// // A standard hex color notation is also available
     /// assert_eq!(SRgba::hex("#FFFFFF").unwrap(), SRgba::new(1.0, 1.0, 1.0, 1.0));
     /// ```
-    ///
     pub fn hex<T: AsRef<str>>(hex: T) -> Result<Self, HexColorError> {
         let hex = hex.as_ref();
         let hex = hex.strip_prefix('#').unwrap_or(hex);
@@ -244,6 +245,16 @@ impl Mix for SRgba {
     }
 }
 
+impl EuclideanDistance for SRgba {
+    #[inline]
+    fn distance_squared(&self, other: &Self) -> f32 {
+        let dr = self.red - other.red;
+        let dg = self.green - other.green;
+        let db = self.blue - other.blue;
+        dr * dr + dg * dg + db * db
+    }
+}
+
 impl From<LinearRgba> for SRgba {
     #[inline]
     fn from(value: LinearRgba) -> Self {
@@ -327,6 +338,24 @@ mod tests {
         assert_approx_eq!(srgba2.green, 0.5, 0.0001);
         assert_approx_eq!(srgba2.blue, 1.0, 0.0001);
         assert_eq!(srgba2.alpha, 1.0);
+    }
+
+    #[test]
+    fn euclidean_distance() {
+        // White to black
+        let a = SRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = SRgba::new(1.0, 1.0, 1.0, 1.0);
+        assert_eq!(a.distance_squared(&b), 3.0);
+
+        // Alpha shouldn't matter
+        let a = SRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = SRgba::new(1.0, 1.0, 1.0, 0.0);
+        assert_eq!(a.distance_squared(&b), 3.0);
+
+        // Red to green
+        let a = SRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = SRgba::new(1.0, 0.0, 0.0, 1.0);
+        assert_eq!(a.distance_squared(&b), 1.0);
     }
 
     #[test]

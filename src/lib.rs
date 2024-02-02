@@ -25,6 +25,8 @@
 //! println!("SRgba: {:?}", srgba);
 //! println!("Hsla: {:?}", hsla);
 //! ```
+
+pub mod color_difference;
 mod color_range;
 mod color_representation;
 mod hsla;
@@ -32,6 +34,7 @@ mod linear_rgba;
 mod mix;
 mod oklaba;
 mod srgba;
+mod test_colors;
 mod testing;
 mod to_css_string;
 

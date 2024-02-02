@@ -1,4 +1,5 @@
 use crate::{
+    color_difference::EuclideanDistance,
     to_css_string::{RoundToDecimalPlaces, ToCssString},
     LinearRgba, Mix, SRgba,
 };
@@ -71,6 +72,13 @@ impl Mix for Oklaba {
             b: self.b * n_factor + other.b * factor,
             alpha: self.alpha * n_factor + other.alpha * factor,
         }
+    }
+}
+
+impl EuclideanDistance for Oklaba {
+    #[inline]
+    fn distance_squared(&self, other: &Self) -> f32 {
+        (self.l - other.l).powi(2) + (self.a - other.a).powi(2) + (self.b - other.b).powi(2)
     }
 }
 

@@ -1,3 +1,4 @@
+workspace = { members = ["crates/gen_tests"] }
 [package]
 name = "bevy_color"
 version = "0.12.1"

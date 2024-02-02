@@ -1,4 +1,4 @@
-use crate::{to_css_string::*, LinearRgba, Mix, SRgba};
+use crate::{color_difference::EuclideanDistance, to_css_string::*, LinearRgba, Mix, SRgba};
 use bevy::render::color::HslRepresentation;
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
@@ -85,6 +85,18 @@ impl Mix for Hsla {
     }
 }
 
+impl EuclideanDistance for Hsla {
+    #[inline]
+    fn distance_squared(&self, other: &Self) -> f32 {
+        let shortest_angle = ((((other.hue - self.hue) % 360.) + 540.) % 360.) - 180.;
+        let hue = self.hue + shortest_angle;
+        let dh = hue - other.hue;
+        let ds = self.saturation - other.saturation;
+        let dl = self.lightness - other.lightness;
+        dh * dh + ds * ds + dl * dl
+    }
+}
+
 impl From<SRgba> for Hsla {
     fn from(value: SRgba) -> Self {
         let (h, s, l) =
@@ -102,7 +114,7 @@ impl From<LinearRgba> for Hsla {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{testing::assert_approx_eq, SRgba};
+    use crate::{test_colors::TEST_COLORS, testing::assert_approx_eq, SRgba};
 
     #[test]
     fn test_to_from_srgba() {
@@ -113,6 +125,28 @@ mod tests {
         assert_approx_eq!(hsla.saturation, hsla2.saturation, 0.001);
         assert_approx_eq!(hsla.lightness, hsla2.lightness, 0.001);
         assert_approx_eq!(hsla.alpha, hsla2.alpha, 0.001);
+    }
+
+    #[test]
+    fn test_to_from_srgba2() {
+        for color in TEST_COLORS.iter() {
+            let rgb2: SRgba = (color.hsl).into();
+            let hsl2: Hsla = (color.rgb).into();
+            assert!(
+                color.rgb.distance(&rgb2) < 0.000001,
+                "{}: {:?} != {:?}",
+                color.name,
+                color.rgb,
+                rgb2
+            );
+            assert!(
+                color.hsl.distance(&hsl2) < 0.000001,
+                "{}: {:?} != {:?}",
+                color.name,
+                color.hsl,
+                hsl2
+            );
+        }
     }
 
     #[test]

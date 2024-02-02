@@ -1,4 +1,7 @@
-use crate::{oklaba::Oklaba, to_css_string::ToCssString, Hsla, Mix, SRgba};
+use crate::{
+    color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, Hsla, Mix,
+    SRgba,
+};
 use bevy::render::color::SrgbColorSpace;
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
@@ -77,6 +80,16 @@ impl Mix for LinearRgba {
     }
 }
 
+impl EuclideanDistance for LinearRgba {
+    #[inline]
+    fn distance_squared(&self, other: &Self) -> f32 {
+        let dr = self.red - other.red;
+        let dg = self.green - other.green;
+        let db = self.blue - other.blue;
+        dr * dr + dg * dg + db * db
+    }
+}
+
 impl From<SRgba> for LinearRgba {
     #[inline]
     fn from(value: SRgba) -> Self {
@@ -126,6 +139,24 @@ impl From<Hsla> for LinearRgba {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn euclidean_distance() {
+        // White to black
+        let a = LinearRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = LinearRgba::new(1.0, 1.0, 1.0, 1.0);
+        assert_eq!(a.distance_squared(&b), 3.0);
+
+        // Alpha shouldn't matter
+        let a = LinearRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = LinearRgba::new(1.0, 1.0, 1.0, 0.0);
+        assert_eq!(a.distance_squared(&b), 3.0);
+
+        // Red to green
+        let a = LinearRgba::new(0.0, 0.0, 0.0, 1.0);
+        let b = LinearRgba::new(1.0, 0.0, 0.0, 1.0);
+        assert_eq!(a.distance_squared(&b), 1.0);
+    }
 
     #[test]
     fn to_css_string() {
