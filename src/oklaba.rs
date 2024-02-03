@@ -1,7 +1,7 @@
 use crate::{
     color_difference::EuclideanDistance,
     to_css_string::{RoundToDecimalPlaces, ToCssString},
-    LinearRgba, Mix, SRgba, WithAlpha,
+    LinearRgba, Mix, SRgba, WithAlpha, WithLuminance,
 };
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
@@ -79,6 +79,13 @@ impl WithAlpha for Oklaba {
     #[inline]
     fn with_alpha(&self, alpha: f32) -> Self {
         Self { alpha, ..*self }
+    }
+}
+
+impl WithLuminance for Oklaba {
+    #[inline]
+    fn with_luminance(&self, l: f32) -> Self {
+        Self { l, ..*self }
     }
 }
 

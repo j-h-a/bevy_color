@@ -16,3 +16,9 @@ pub trait WithAlpha: Sized {
     /// Return a new version of this color with the given alpha value.
     fn with_alpha(&self, alpha: f32) -> Self;
 }
+
+/// Methods for changing the luminance of a color.
+pub trait WithLuminance: Sized {
+    /// Return a new version of this color with the given alpha value.
+    fn with_luminance(&self, alpha: f32) -> Self;
+}

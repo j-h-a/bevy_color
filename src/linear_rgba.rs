@@ -1,6 +1,6 @@
 use crate::{
     color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, Hsla, Mix,
-    SRgba, WithAlpha,
+    SRgba, WithAlpha, WithLuminance,
 };
 use bevy::render::color::SrgbColorSpace;
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
@@ -84,6 +84,20 @@ impl WithAlpha for LinearRgba {
     #[inline]
     fn with_alpha(&self, alpha: f32) -> Self {
         Self { alpha, ..*self }
+    }
+}
+
+impl WithLuminance for LinearRgba {
+    #[inline]
+    fn with_luminance(&self, luminance: f32) -> Self {
+        let current_luminance = self.red * 0.2126 + self.green * 0.7152 + self.blue * 0.0722;
+        let adjustment = luminance / current_luminance;
+        Self {
+            red: (self.red * adjustment).clamp(0., 1.),
+            green: self.green * adjustment.clamp(0., 1.),
+            blue: self.blue * adjustment.clamp(0., 1.),
+            alpha: self.alpha,
+        }
     }
 }
 
