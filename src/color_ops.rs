@@ -10,3 +10,9 @@ pub trait Mix: Sized {
         *self = self.mix(&other, factor);
     }
 }
+
+/// Methods for manipulating alpha values.
+pub trait WithAlpha: Sized {
+    /// Return a new version of this color with the given alpha value.
+    fn with_alpha(&self, alpha: f32) -> Self;
+}

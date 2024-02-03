@@ -1,7 +1,7 @@
 use crate::color_difference::EuclideanDistance;
 use crate::oklaba::Oklaba;
 use crate::to_css_string::ToCssString;
-use crate::{Hsla, LinearRgba, Mix};
+use crate::{Hsla, LinearRgba, Mix, WithAlpha};
 use bevy::render::color::{HexColorError, HslRepresentation, SrgbColorSpace};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
@@ -242,6 +242,13 @@ impl Mix for SRgba {
             blue: self.blue * n_factor + other.blue * factor,
             alpha: self.alpha * n_factor + other.alpha * factor,
         }
+    }
+}
+
+impl WithAlpha for SRgba {
+    #[inline]
+    fn with_alpha(&self, alpha: f32) -> Self {
+        Self { alpha, ..*self }
     }
 }
 
