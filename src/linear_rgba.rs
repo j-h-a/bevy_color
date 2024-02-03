@@ -2,7 +2,10 @@ use crate::{
     color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, Hsla, Mix,
     SRgba, WithAlpha, WithLuminance,
 };
-use bevy::render::color::{Color, SrgbColorSpace};
+use bevy::{
+    math::Vec4,
+    render::color::{Color, SrgbColorSpace},
+};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
 
@@ -145,6 +148,18 @@ impl From<Color> for LinearRgba {
             } => LinearRgba::new(red, green, blue, alpha),
             _ => unreachable!(),
         }
+    }
+}
+
+impl From<LinearRgba> for [f32; 4] {
+    fn from(color: LinearRgba) -> Self {
+        [color.red, color.green, color.blue, color.alpha]
+    }
+}
+
+impl From<LinearRgba> for Vec4 {
+    fn from(color: LinearRgba) -> Self {
+        Vec4::new(color.red, color.green, color.blue, color.alpha)
     }
 }
 
