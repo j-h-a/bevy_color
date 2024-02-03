@@ -1,11 +1,11 @@
 workspace = { members = ["crates/gen_tests"] }
 [package]
 name = "bevy_color"
-version = "0.12.1-1"
+version = "0.14.0"
 edition = "2021"
 description = "Types for representing and manipulating color values"
 homepage = "https://bevyengine.org"
-repository = "https://github.com/bevyengine/bevy"
+repository = "https://github.com/viridia/bevy_color"
 license = "MIT OR Apache-2.0"
 keywords = ["bevy", "color"]
 

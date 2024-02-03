@@ -128,7 +128,7 @@ impl From<SRgba> for Oklaba {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{testing::assert_approx_eq, SRgba};
+    use crate::{test_colors::TEST_COLORS, testing::assert_approx_eq, SRgba};
 
     #[test]
     fn test_to_from_srgba() {
@@ -142,6 +142,28 @@ mod tests {
         assert_approx_eq!(oklaba.a, oklaba2.a, 0.001);
         assert_approx_eq!(oklaba.b, oklaba2.b, 0.001);
         assert_approx_eq!(oklaba.alpha, oklaba2.alpha, 0.001);
+    }
+
+    #[test]
+    fn test_to_from_srgba_2() {
+        for color in TEST_COLORS.iter() {
+            let rgb2: SRgba = (color.oklab).into();
+            let oklab: Oklaba = (color.rgb).into();
+            assert!(
+                color.rgb.distance(&rgb2) < 0.0001,
+                "{}: {:?} != {:?}",
+                color.name,
+                color.rgb,
+                rgb2
+            );
+            assert!(
+                color.oklab.distance(&oklab) < 0.0001,
+                "{}: {:?} != {:?}",
+                color.name,
+                color.oklab,
+                oklab
+            );
+        }
     }
 
     #[test]

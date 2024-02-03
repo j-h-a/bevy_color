@@ -170,7 +170,7 @@ mod tests {
     }
 
     #[test]
-    fn test_to_from_srgba2() {
+    fn test_to_from_srgba_2() {
         for color in TEST_COLORS.iter() {
             let rgb2: SRgba = (color.hsl).into();
             let hsl2: Hsla = (color.rgb).into();
