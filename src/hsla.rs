@@ -2,7 +2,7 @@ use crate::{
     color_difference::EuclideanDistance, to_css_string::*, LinearRgba, Mix, SRgba, WithAlpha,
     WithLuminance,
 };
-use bevy::render::color::HslRepresentation;
+use bevy::render::color::{Color, HslRepresentation};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
 
@@ -125,6 +125,31 @@ impl From<SRgba> for Hsla {
 impl From<LinearRgba> for Hsla {
     fn from(value: LinearRgba) -> Self {
         Hsla::from(SRgba::from(value))
+    }
+}
+
+impl From<Hsla> for Color {
+    fn from(value: Hsla) -> Self {
+        Color::Hsla {
+            hue: value.hue,
+            saturation: value.saturation,
+            lightness: value.lightness,
+            alpha: value.alpha,
+        }
+    }
+}
+
+impl From<Color> for Hsla {
+    fn from(value: Color) -> Self {
+        match value.as_hsla() {
+            Color::Hsla {
+                hue,
+                saturation,
+                lightness,
+                alpha,
+            } => Hsla::new(hue, saturation, lightness, alpha),
+            _ => unreachable!(),
+        }
     }
 }
 

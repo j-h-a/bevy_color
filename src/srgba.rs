@@ -2,7 +2,7 @@ use crate::color_difference::EuclideanDistance;
 use crate::oklaba::Oklaba;
 use crate::to_css_string::ToCssString;
 use crate::{Hsla, LinearRgba, Mix, WithAlpha, WithLuminance};
-use bevy::render::color::{HexColorError, HslRepresentation, SrgbColorSpace};
+use bevy::render::color::{Color, HexColorError, HslRepresentation, SrgbColorSpace};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use serde::{Deserialize, Serialize};
 
@@ -295,6 +295,31 @@ impl From<Hsla> for SRgba {
 impl From<Oklaba> for SRgba {
     fn from(value: Oklaba) -> Self {
         SRgba::from(LinearRgba::from(value))
+    }
+}
+
+impl From<SRgba> for Color {
+    fn from(value: SRgba) -> Self {
+        Color::Rgba {
+            red: value.red,
+            green: value.green,
+            blue: value.blue,
+            alpha: value.alpha,
+        }
+    }
+}
+
+impl From<Color> for SRgba {
+    fn from(value: Color) -> Self {
+        match value.as_rgba() {
+            Color::Rgba {
+                red,
+                green,
+                blue,
+                alpha,
+            } => SRgba::new(red, green, blue, alpha),
+            _ => unreachable!(),
+        }
     }
 }
 
