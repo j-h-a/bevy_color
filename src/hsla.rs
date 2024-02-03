@@ -34,7 +34,7 @@ impl Hsla {
         }
     }
 
-    /// Convert the Oklaba color to a tuple of components (h, s, l, a). This is useful
+    /// Convert the Hsla color to a tuple of components (h, s, l, a). This is useful
     /// when you need to transmute the data type of a color to a different type without converting
     /// the values.
     #[inline]
@@ -42,7 +42,7 @@ impl Hsla {
         (self.hue, self.saturation, self.lightness, self.alpha)
     }
 
-    /// Construct a new [`Oklaba`] color from a tuple of components (h, s, l, a).
+    /// Construct a new [`Hsla`] color from a tuple of components (h, s, l, a).
     #[inline]
     pub const fn from_components((l, a, b, alpha): (f32, f32, f32, f32)) -> Self {
         Self::new(l, a, b, alpha)

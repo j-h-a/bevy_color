@@ -185,7 +185,7 @@ impl SRgba {
     /// * `g` - Green channel. [0, 255]
     /// * `b` - Blue channel. [0, 255]
     ///
-    /// See also [`SRgba::rgb`], [`SRgba::rgba_u8`], [`SRgba::hex`].
+    /// See also [`SRgba::new`], [`SRgba::rgba_u8`], [`SRgba::hex`].
     ///
     pub fn rgb_u8(r: u8, g: u8, b: u8) -> Self {
         Self::rgba_u8(r, g, b, u8::MAX)
@@ -202,7 +202,7 @@ impl SRgba {
     /// * `b` - Blue channel. [0, 255]
     /// * `a` - Alpha channel. [0, 255]
     ///
-    /// See also [`SRgba::rgba`], [`SRgba::rgb_u8`], [`SRgba::hex`].
+    /// See also [`SRgba::new`], [`SRgba::rgb_u8`], [`SRgba::hex`].
     ///
     pub fn rgba_u8(r: u8, g: u8, b: u8, a: u8) -> Self {
         Self::new(
