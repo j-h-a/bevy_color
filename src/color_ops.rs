@@ -1,4 +1,6 @@
-/// Methods for changing the luminance of a color.
+/// Methods for changing the luminance of a color. Note that these methods are not
+/// guaranteed to produce the same results in different color spaces, but are only
+/// approximations.
 pub trait LuminanceOps: Sized {
     /// Return the luminance of this color (0.0 - 1.0).
     fn luminance(&self) -> f32;
