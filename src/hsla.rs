@@ -1,6 +1,6 @@
 use crate::{
-    color_difference::EuclideanDistance, to_css_string::*, LinearRgba, Mix, SRgba, WithAlpha,
-    WithLuminance,
+    color_difference::EuclideanDistance, to_css_string::*, LinearRgba, LuminanceOps, Mix, SRgba,
+    WithAlpha,
 };
 use bevy::render::color::{Color, HslRepresentation};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
@@ -95,10 +95,28 @@ impl WithAlpha for Hsla {
     }
 }
 
-impl WithLuminance for Hsla {
+impl LuminanceOps for Hsla {
     #[inline]
     fn with_luminance(&self, lightness: f32) -> Self {
         Self { lightness, ..*self }
+    }
+
+    fn luminance(&self) -> f32 {
+        self.lightness
+    }
+
+    fn darken(&self, amount: f32) -> Self {
+        Self {
+            lightness: (self.lightness - amount).max(0.),
+            ..*self
+        }
+    }
+
+    fn lighten(&self, amount: f32) -> Self {
+        Self {
+            lightness: (self.lightness + amount).min(1.),
+            ..*self
+        }
     }
 }
 

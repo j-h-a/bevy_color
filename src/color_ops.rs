@@ -1,19 +1,23 @@
-/// Operations on a color.
-pub trait ColorOps: Sized {
+/// Methods for changing the luminance of a color.
+pub trait LuminanceOps: Sized {
     /// Return the luminance of this color (0.0 - 1.0).
     fn luminance(&self) -> f32;
 
-    /// Return the saturation of this color (0.0 - 1.0).
-    fn saturation(&self) -> f32;
+    /// Return a new version of this color with the given luminance.
+    fn with_luminance(&self, alpha: f32) -> Self;
 
-    /// Return a darker version of this color. The `amount` should be between 0.0 and 1.0, and
-    /// is not relative to the current color, but rather represents fixed steps. So for example,
-    /// if the color is a 50% gray, and `amount` is 0.25, the result will be 25% gray.
+    /// Return a darker version of this color. The `amount` should be between 0.0 and 1.0.
+    /// The amount represents an absolute decrease in luminance, and is commutative:
+    /// `color.darken(a).darken(b) == color.darken(a + b)`.
+    ///
+    /// For a relative decrease in luminance, you can simply `mix()` with black.
     fn darken(&self, amount: f32) -> Self;
 
-    /// Return a lighter version of this color. The `amount` should be between 0.0 and 1.0, and
-    /// is not relative to the current color, but rather represents fixed steps. So for example,
-    /// if the color is a 50% gray, and `amount` is 0.25, the result will be 75% gray.
+    /// Return a lighter version of this color. The `amount` should be between 0.0 and 1.0.
+    /// The amount represents an absolute increase in luminance, and is commutative:
+    /// `color.lighten(a).lighten(b) == color.lighten(a + b)`.
+    ///
+    /// For a relative increase in luminance, you can simply `mix()` with white.
     fn lighten(&self, amount: f32) -> Self;
 }
 
@@ -34,10 +38,4 @@ pub trait Mix: Sized {
 pub trait WithAlpha: Sized {
     /// Return a new version of this color with the given alpha value.
     fn with_alpha(&self, alpha: f32) -> Self;
-}
-
-/// Methods for changing the luminance of a color.
-pub trait WithLuminance: Sized {
-    /// Return a new version of this color with the given alpha value.
-    fn with_luminance(&self, alpha: f32) -> Self;
 }

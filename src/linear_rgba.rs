@@ -1,6 +1,6 @@
 use crate::{
-    color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, ColorOps,
-    Hsla, Mix, SRgba, WithAlpha, WithLuminance,
+    color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, Hsla,
+    LuminanceOps, Mix, SRgba, WithAlpha,
 };
 use bevy::{
     math::Vec4,
@@ -86,15 +86,22 @@ impl ToCssString for LinearRgba {
     }
 }
 
-impl ColorOps for LinearRgba {
+impl LuminanceOps for LinearRgba {
     #[inline]
     fn luminance(&self) -> f32 {
         self.red * 0.2126 + self.green * 0.7152 + self.blue * 0.0722
     }
 
     #[inline]
-    fn saturation(&self) -> f32 {
-        todo!()
+    fn with_luminance(&self, luminance: f32) -> Self {
+        let current_luminance = self.red * 0.2126 + self.green * 0.7152 + self.blue * 0.0722;
+        let adjustment = luminance / current_luminance;
+        Self {
+            red: (self.red * adjustment).clamp(0., 1.),
+            green: self.green * adjustment.clamp(0., 1.),
+            blue: self.blue * adjustment.clamp(0., 1.),
+            alpha: self.alpha,
+        }
     }
 
     #[inline]
@@ -129,20 +136,6 @@ impl WithAlpha for LinearRgba {
     #[inline]
     fn with_alpha(&self, alpha: f32) -> Self {
         Self { alpha, ..*self }
-    }
-}
-
-impl WithLuminance for LinearRgba {
-    #[inline]
-    fn with_luminance(&self, luminance: f32) -> Self {
-        let current_luminance = self.red * 0.2126 + self.green * 0.7152 + self.blue * 0.0722;
-        let adjustment = luminance / current_luminance;
-        Self {
-            red: (self.red * adjustment).clamp(0., 1.),
-            green: self.green * adjustment.clamp(0., 1.),
-            blue: self.blue * adjustment.clamp(0., 1.),
-            alpha: self.alpha,
-        }
     }
 }
 
@@ -275,5 +268,20 @@ mod tests {
             LinearRgba::from(SRgba::NONE).to_css_string(),
             "color(srgb-linear 0 0 0 0)"
         );
+    }
+
+    #[test]
+    fn darken_lighten() {
+        // Darken and lighten should be commutative.
+        let color = LinearRgba::new(0.4, 0.5, 0.6, 1.0);
+        let darker1 = color.darken(0.1);
+        let darker2 = darker1.darken(0.1);
+        let twice_as_dark = color.darken(0.2);
+        assert!(darker2.distance_squared(&twice_as_dark) < 0.0001);
+
+        let lighter1 = color.lighten(0.1);
+        let lighter2 = lighter1.lighten(0.1);
+        let twice_as_light = color.lighten(0.2);
+        assert!(lighter2.distance_squared(&twice_as_light) < 0.0001);
     }
 }
