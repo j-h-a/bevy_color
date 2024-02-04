@@ -1,3 +1,22 @@
+/// Operations on a color.
+pub trait ColorOps: Sized {
+    /// Return the luminance of this color (0.0 - 1.0).
+    fn luminance(&self) -> f32;
+
+    /// Return the saturation of this color (0.0 - 1.0).
+    fn saturation(&self) -> f32;
+
+    /// Return a darker version of this color. The `amount` should be between 0.0 and 1.0, and
+    /// is not relative to the current color, but rather represents fixed steps. So for example,
+    /// if the color is a 50% gray, and `amount` is 0.25, the result will be 25% gray.
+    fn darken(&self, amount: f32) -> Self;
+
+    /// Return a lighter version of this color. The `amount` should be between 0.0 and 1.0, and
+    /// is not relative to the current color, but rather represents fixed steps. So for example,
+    /// if the color is a 50% gray, and `amount` is 0.25, the result will be 75% gray.
+    fn lighten(&self, amount: f32) -> Self;
+}
+
 /// Linear interpolation of two colors within a given color space.
 pub trait Mix: Sized {
     /// Linearly interpolate between this and another color, by factor.

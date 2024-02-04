@@ -1,7 +1,7 @@
 use crate::color_difference::EuclideanDistance;
 use crate::oklaba::Oklaba;
 use crate::to_css_string::ToCssString;
-use crate::{Hsla, LinearRgba, Mix, WithAlpha, WithLuminance};
+use crate::{ColorOps, Hsla, LinearRgba, Mix, WithAlpha, WithLuminance};
 use bevy::math::Vec4;
 use bevy::render::color::{Color, HexColorError, HslRepresentation, SrgbColorSpace};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
@@ -213,6 +213,12 @@ impl SRgba {
             a as f32 / u8::MAX as f32,
         )
     }
+
+    /// Convert the [`SRgba`] color to a linear representation.
+    /// This method is exposed here because it is a common operation when working with colors.
+    pub fn to_linear(&self) -> LinearRgba {
+        LinearRgba::from(*self)
+    }
 }
 
 impl Default for SRgba {
@@ -230,6 +236,32 @@ impl ToCssString for SRgba {
             self.blue * 255.0,
             self.alpha
         )
+    }
+}
+
+impl ColorOps for SRgba {
+    #[inline]
+    fn luminance(&self) -> f32 {
+        let linear: LinearRgba = (*self).into();
+        linear.luminance()
+    }
+
+    #[inline]
+    fn saturation(&self) -> f32 {
+        let linear: LinearRgba = (*self).into();
+        linear.saturation()
+    }
+
+    #[inline]
+    fn darken(&self, amount: f32) -> Self {
+        let linear: LinearRgba = (*self).into();
+        linear.darken(amount).into()
+    }
+
+    #[inline]
+    fn lighten(&self, amount: f32) -> Self {
+        let linear: LinearRgba = (*self).into();
+        linear.lighten(amount).into()
     }
 }
 

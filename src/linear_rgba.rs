@@ -1,6 +1,6 @@
 use crate::{
-    color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, Hsla, Mix,
-    SRgba, WithAlpha, WithLuminance,
+    color_difference::EuclideanDistance, oklaba::Oklaba, to_css_string::ToCssString, ColorOps,
+    Hsla, Mix, SRgba, WithAlpha, WithLuminance,
 };
 use bevy::{
     math::Vec4,
@@ -20,8 +20,6 @@ pub struct LinearRgba {
 }
 
 impl LinearRgba {
-    #[doc(alias = "transparent")]
-
     /// Construct a new LinearRgba color from components.
     pub const fn new(red: f32, green: f32, blue: f32, alpha: f32) -> Self {
         Self {
@@ -45,6 +43,24 @@ impl LinearRgba {
     pub const fn from_components((red, green, blue, alpha): (f32, f32, f32, f32)) -> Self {
         Self::new(red, green, blue, alpha)
     }
+
+    /// Convert the [`LinearRgba`] color to a [`SRgba`].
+    pub fn to_nonlinear(&self) -> SRgba {
+        SRgba::from(*self)
+    }
+
+    /// Make the color lighter or darker by some amount
+    fn adjust_lightness(&mut self, amount: f32) {
+        let luminance = self.luminance();
+        let target_luminance = (luminance + amount).clamp(0.0, 1.0);
+        if target_luminance < luminance {
+            let adjustment = (luminance - target_luminance) / luminance;
+            self.mix_assign(Self::new(0.0, 0.0, 0.0, self.alpha), adjustment);
+        } else if target_luminance > luminance {
+            let adjustment = (target_luminance - luminance) / (1. - luminance);
+            self.mix_assign(Self::new(1.0, 1.0, 1.0, self.alpha), adjustment);
+        }
+    }
 }
 
 impl Default for LinearRgba {
@@ -67,6 +83,32 @@ impl ToCssString for LinearRgba {
             self.blue * 255.0,
             self.alpha
         )
+    }
+}
+
+impl ColorOps for LinearRgba {
+    #[inline]
+    fn luminance(&self) -> f32 {
+        self.red * 0.2126 + self.green * 0.7152 + self.blue * 0.0722
+    }
+
+    #[inline]
+    fn saturation(&self) -> f32 {
+        todo!()
+    }
+
+    #[inline]
+    fn darken(&self, amount: f32) -> Self {
+        let mut result = *self;
+        result.adjust_lightness(-amount);
+        result
+    }
+
+    #[inline]
+    fn lighten(&self, amount: f32) -> Self {
+        let mut result = *self;
+        result.adjust_lightness(amount);
+        result
     }
 }
 
