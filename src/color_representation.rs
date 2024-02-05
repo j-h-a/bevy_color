@@ -1,4 +1,4 @@
-use crate::{to_css_string::ToCssString, Hsla, LinearRgba, Oklaba, SRgba};
+use crate::{to_css_string::ToCssString, Hsla, Lcha, LinearRgba, Oklaba, SRgba};
 
 /// An enumerated type that can represent any of the color types in this crate.
 ///
@@ -9,6 +9,7 @@ pub enum ColorRepresentation {
     SRgba(SRgba),
     LinearRgba(LinearRgba),
     Hsla(Hsla),
+    Lcha(Lcha),
     Oklaba(Oklaba),
 }
 
@@ -19,6 +20,7 @@ impl ColorRepresentation {
             ColorRepresentation::SRgba(srgba) => (*srgba).into(),
             ColorRepresentation::LinearRgba(linear) => *linear,
             ColorRepresentation::Hsla(hsla) => (*hsla).into(),
+            ColorRepresentation::Lcha(lcha) => (*lcha).into(),
             ColorRepresentation::Oklaba(oklab) => (*oklab).into(),
         }
     }
@@ -57,6 +59,7 @@ impl ToCssString for ColorRepresentation {
             ColorRepresentation::SRgba(srgba) => srgba.to_css_string(),
             ColorRepresentation::LinearRgba(linear) => linear.to_css_string(),
             ColorRepresentation::Hsla(hsla) => hsla.to_css_string(),
+            ColorRepresentation::Lcha(lcha) => lcha.to_css_string(),
             ColorRepresentation::Oklaba(oklab) => oklab.to_css_string(),
         }
     }
