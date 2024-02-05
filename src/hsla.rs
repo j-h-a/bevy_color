@@ -102,14 +102,14 @@ impl LuminanceOps for Hsla {
         self.lightness
     }
 
-    fn darken(&self, amount: f32) -> Self {
+    fn darker(&self, amount: f32) -> Self {
         Self {
             lightness: (self.lightness - amount).max(0.),
             ..*self
         }
     }
 
-    fn lighten(&self, amount: f32) -> Self {
+    fn lighter(&self, amount: f32) -> Self {
         Self {
             lightness: (self.lightness + amount).min(1.),
             ..*self

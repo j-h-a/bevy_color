@@ -97,7 +97,7 @@ impl LuminanceOps for Lcha {
         self.lightness
     }
 
-    fn darken(&self, amount: f32) -> Self {
+    fn darker(&self, amount: f32) -> Self {
         Self::new(
             (self.lightness - amount).max(0.),
             self.chroma,
@@ -106,7 +106,7 @@ impl LuminanceOps for Lcha {
         )
     }
 
-    fn lighten(&self, amount: f32) -> Self {
+    fn lighter(&self, amount: f32) -> Self {
         Self::new(
             (self.lightness + amount).min(1.),
             self.chroma,

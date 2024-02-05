@@ -92,11 +92,11 @@ impl LuminanceOps for Oklaba {
         self.l
     }
 
-    fn darken(&self, amount: f32) -> Self {
+    fn darker(&self, amount: f32) -> Self {
         Self::new((self.l - amount).max(0.), self.a, self.b, self.alpha)
     }
 
-    fn lighten(&self, amount: f32) -> Self {
+    fn lighter(&self, amount: f32) -> Self {
         Self::new((self.l + amount).min(1.), self.a, self.b, self.alpha)
     }
 }
