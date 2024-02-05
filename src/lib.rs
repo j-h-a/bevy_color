@@ -5,6 +5,7 @@
 //! - [`SRgba`] (standard RGBA, with gamma correction)
 //! - [`LinearRgba`] (linear RGBA, without gamma correction)
 //! - [`Hsla`] (hue, saturation, lightness, alpha)
+//! - [`Lcha`] (lightness, chroma, hue, alpha)
 //! - [`Oklaba`] (hue, chroma, lightness, alpha)
 //!
 //! Each of these color spaces is represented as distinct Rust types. Colors can be converted
