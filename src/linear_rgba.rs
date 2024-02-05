@@ -105,14 +105,14 @@ impl LuminanceOps for LinearRgba {
     }
 
     #[inline]
-    fn darken(&self, amount: f32) -> Self {
+    fn darker(&self, amount: f32) -> Self {
         let mut result = *self;
         result.adjust_lightness(-amount);
         result
     }
 
     #[inline]
-    fn lighten(&self, amount: f32) -> Self {
+    fn lighter(&self, amount: f32) -> Self {
         let mut result = *self;
         result.adjust_lightness(amount);
         result
@@ -271,17 +271,17 @@ mod tests {
     }
 
     #[test]
-    fn darken_lighten() {
-        // Darken and lighten should be commutative.
+    fn darker_lighter() {
+        // Darker and lighter should be commutative.
         let color = LinearRgba::new(0.4, 0.5, 0.6, 1.0);
-        let darker1 = color.darken(0.1);
-        let darker2 = darker1.darken(0.1);
-        let twice_as_dark = color.darken(0.2);
+        let darker1 = color.darker(0.1);
+        let darker2 = darker1.darker(0.1);
+        let twice_as_dark = color.darker(0.2);
         assert!(darker2.distance_squared(&twice_as_dark) < 0.0001);
 
-        let lighter1 = color.lighten(0.1);
-        let lighter2 = lighter1.lighten(0.1);
-        let twice_as_light = color.lighten(0.2);
+        let lighter1 = color.lighter(0.1);
+        let lighter2 = lighter1.lighter(0.1);
+        let twice_as_light = color.lighter(0.2);
         assert!(lighter2.distance_squared(&twice_as_light) < 0.0001);
     }
 }

@@ -10,17 +10,17 @@ pub trait LuminanceOps: Sized {
 
     /// Return a darker version of this color. The `amount` should be between 0.0 and 1.0.
     /// The amount represents an absolute decrease in luminance, and is commutative:
-    /// `color.darken(a).darken(b) == color.darken(a + b)`.
+    /// `color.darker(a).darker(b) == color.darker(a + b)`.
     ///
     /// For a relative decrease in luminance, you can simply `mix()` with black.
-    fn darken(&self, amount: f32) -> Self;
+    fn darker(&self, amount: f32) -> Self;
 
     /// Return a lighter version of this color. The `amount` should be between 0.0 and 1.0.
     /// The amount represents an absolute increase in luminance, and is commutative:
-    /// `color.lighten(a).lighten(b) == color.lighten(a + b)`.
+    /// `color.lighter(a).lighter(b) == color.lighter(a + b)`.
     ///
     /// For a relative increase in luminance, you can simply `mix()` with white.
-    fn lighten(&self, amount: f32) -> Self;
+    fn lighter(&self, amount: f32) -> Self;
 }
 
 /// Linear interpolation of two colors within a given color space.
